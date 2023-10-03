@@ -1,0 +1,32 @@
+<div class="container conatiner-fluid">
+  <br />
+  <div class="row">
+    <div class="col col-1">
+      <button type="button" class="btn btn-success" (click)="onBackClicked()">
+        Back
+      </button>
+    </div>
+  </div>
+  <br />
+  <div class="row">
+    <div class="col">
+      <table class="table">
+        <tbody>
+          <tr *ngFor="let score of teamScores">
+            <td>
+              <img [src]="score.homeTeam.logoUrl" width="30" height="30" />
+            </td>
+            <td>{{ score.homeTeam.name }}</td>
+            <td>{{ score.homeTeam.goals }}</td>
+            <td>-</td>
+            <td>{{ score.awayTeam.goals }}</td>
+            <td>{{ score.awayTeam.name }}</td>
+            <td>
+              <img [src]="score.awayTeam.logoUrl" width="30" height="30" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
