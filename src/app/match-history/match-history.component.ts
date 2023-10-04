@@ -24,8 +24,8 @@ export class MatchHistoryComponent implements OnInit {
       const teamId = +params['teamId'];
       if (this.leagueId && teamId && allowedLeagueIds.includes(this.leagueId)) {
         this.matchHistoryService
-          .getTeamResultsHistory(this.leagueId, teamId)
-          .then((res) => (this.teamScores = res));
+          .getTeamResultsHistory(this.leagueId, teamId).then(res => this.teamScores = res)
+          
       } else {
         this.router.navigate(['page-not-found']);
       }

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import {
   MatchHistoryModel,
   TeamScoreModel,
@@ -35,7 +35,7 @@ export interface Fixture {
 }
 
 export interface FixtureResponse {
-  errors: { bug: string };
+  errors: Object;
   results: number;
   response: Fixture[];
 }
@@ -66,7 +66,7 @@ export interface League {
 }
 
 export interface StandigsResponse {
-  errors: { bug: string };
+  errors: Object;
   results: number;
   response: League[];
 }
@@ -76,7 +76,7 @@ export class ApiService {
   apiKey: string = 'a5e82426e1b657f078bba9ea5aa31c54';
   baseUrl: string = 'https://v3.football.api-sports.io';
   season: number = new Date().getFullYear();
-  fixtureStatus: string = 'FT';
+  matchFinishedStatus: string = 'FT';
 
   constructor(private http: HttpClient) {}
 
@@ -93,8 +93,13 @@ export class ApiService {
       )
       .pipe(
         map((res) => {
-          if (res.errors) throwError(() => new Error(res.errors.bug));
+          if (!(res.errors instanceof Array))
+            throw new ErrorEvent('Error', {
+              message: Object.values(res.errors)[0],
+            });
+
           let standings: StandingModel[] = [];
+
           res.response[0].league.standings[0].map((s) => {
             standings.push(
               new StandingModel(
@@ -112,6 +117,9 @@ export class ApiService {
             );
           });
           return standings;
+        }),
+        catchError((err) => {
+          return throwError(() => err);
         })
       );
   }
@@ -119,7 +127,7 @@ export class ApiService {
   getFinishedMatches(leagueId: number): Observable<MatchHistoryModel[]> {
     return this.http
       .get<FixtureResponse>(
-        `${this.baseUrl}/fixtures?league=${leagueId}&season=${this.season}&status=${this.fixtureStatus}`,
+        `${this.baseUrl}/fixtures?league=${leagueId}&season=${this.season}&status=${this.matchFinishedStatus}`,
         {
           headers: {
             'x-rapidapi-host': 'v3.football.api-sports.io',
@@ -129,7 +137,11 @@ export class ApiService {
       )
       .pipe(
         map((res) => {
-          if (res.errors) throwError(() => new Error(res.errors.bug));
+          if (!(res.errors instanceof Array))
+            throw new ErrorEvent('Error', {
+              message: Object.values(res.errors)[0],
+            });
+
           let data: MatchHistoryModel[] = [];
 
           res.response.map((r) => {
@@ -154,6 +166,9 @@ export class ApiService {
             data.push(result);
           });
           return data;
+        }),
+        catchError((err) => {
+          return throwError(() => err);
         })
       );
   }

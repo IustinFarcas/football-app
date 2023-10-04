@@ -27,7 +27,9 @@ export class StandingsService {
   }
 
   private async refreshCache(leagueId: number, key: string): Promise<void> {
-    const data = await firstValueFrom(this.api.getStanding(leagueId));
+    const data = await firstValueFrom(this.api.getStanding(leagueId)).catch(
+      (err) => console.log(err)
+    );
     if (data) {
       await this.cache.writeToCache(
         new StandingsCacheModel(leagueId, new Date(), data),

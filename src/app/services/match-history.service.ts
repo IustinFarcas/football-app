@@ -8,7 +8,6 @@ import { CacheService } from './cache.service';
 
 @Injectable({ providedIn: 'root' })
 export class MatchHistoryService {
-  matchFinishedStatus: string = 'FT';
   constructor(private api: ApiService, private cache: CacheService) {}
 
   async getTeamResultsHistory(
@@ -32,7 +31,9 @@ export class MatchHistoryService {
   }
 
   private async refreshCache(leagueId: number, key: string): Promise<void> {
-    const data = await firstValueFrom(this.api.getFinishedMatches(leagueId));
+    const data = await firstValueFrom(
+      this.api.getFinishedMatches(leagueId)
+    ).catch((err) => console.log(err));
     if (data) {
       await this.cache.writeToCache(
         new MatchHistoryCacheModel(leagueId, new Date(), data),
@@ -46,13 +47,11 @@ export class MatchHistoryService {
     key: string
   ): MatchHistoryModel[] {
     const data = this.cache.readFromCache<MatchHistoryCacheModel>(key)?.data;
+
     return data
       ? data
           .filter((r) => {
-            return (
-              r.status == this.matchFinishedStatus &&
-              (r.homeTeam.id === teamId || r.awayTeam.id === teamId)
-            );
+            return r.homeTeam.id === teamId || r.awayTeam.id === teamId;
           })
           .sort((d1, d2) => {
             const t1 = new Date(d1.eventDate).getTime();
