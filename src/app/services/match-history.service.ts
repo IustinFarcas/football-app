@@ -47,12 +47,19 @@ export class MatchHistoryService {
   ): MatchHistoryModel[] {
     const data = this.cache.readFromCache<MatchHistoryCacheModel>(key)?.data;
     return data
-      ? data.filter((r) => {
-          return (
-            r.status == this.matchFinishedStatus &&
-            (r.homeTeam.id === teamId || r.awayTeam.id === teamId)
-          );
-        })
+      ? data
+          .filter((r) => {
+            return (
+              r.status == this.matchFinishedStatus &&
+              (r.homeTeam.id === teamId || r.awayTeam.id === teamId)
+            );
+          })
+          .sort((d1, d2) => {
+            const t1 = new Date(d1.eventDate).getTime();
+            const t2 = new Date(d2.eventDate).getTime();
+            return t1 > t2 ? 1 : t1 < t2 ? -1 : 0;
+          })
+          .slice(-10)
       : [];
   }
 }

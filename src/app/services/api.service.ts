@@ -10,6 +10,7 @@ import { StandingModel } from '../models/standing.model';
 
 export interface Fixture {
   fixture: {
+    timestamp: number;
     // FT - Match Finished
     status: {
       short: string;
@@ -80,7 +81,6 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   getStanding(leagueId: number): Observable<StandingModel[]> {
-    debugger;
     return this.http
       .get<StandigsResponse>(
         `${this.baseUrl}/standings?league=${leagueId}&season=${this.season}`,
@@ -147,6 +147,7 @@ export class ApiService {
             );
             const result = new MatchHistoryModel(
               r.fixture.status.short,
+              new Date(r.fixture.timestamp),
               homeTeam,
               awayTeam
             );

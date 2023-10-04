@@ -1,9 +1,9 @@
 import { LeaguesEnum } from './models/leagues.enum';
 
 export const addHours = (date: Date, nrOfHours: number): Date => {
-  const resultDate = new Date(date);
+  const validDateObj = new Date(date);
   return new Date(
-    resultDate.setTime(resultDate.getTime() + nrOfHours * 60 * 60 * 1000)
+    validDateObj.setTime(validDateObj.getTime() + nrOfHours * 60 * 60 * 1000)
   );
 };
 

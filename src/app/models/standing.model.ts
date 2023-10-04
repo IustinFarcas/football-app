@@ -1,7 +1,4 @@
-import { IModel } from "./model.interface";
-
-
-export class StandingModel implements IModel {
+export class StandingModel {
   constructor(
     public teamId: number,
     public rank: number,

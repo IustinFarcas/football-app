@@ -1,5 +1,3 @@
-import { IModel } from './model.interface';
-
 export class TeamScoreModel {
   constructor(
     public id: number,
@@ -9,9 +7,10 @@ export class TeamScoreModel {
   ) {}
 }
 
-export class MatchHistoryModel implements IModel {
+export class MatchHistoryModel {
   constructor(
     public status: string,
+    public eventDate: Date,
     public homeTeam: TeamScoreModel,
     public awayTeam: TeamScoreModel
   ) {}
