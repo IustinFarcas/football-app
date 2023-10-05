@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MatchHistoryComponent } from './match-history/match-history.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { RankingComponent } from './rankings/ranking/ranking.component';
 import { RankingsComponent } from './rankings/rankings.component';
+import { ResultsComponent } from './results/results.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 
 const routes: Routes = [
@@ -19,7 +19,7 @@ const routes: Routes = [
       },
     ],
   },
-  { path: ':leagueId/:teamId', component: MatchHistoryComponent },
+  { path: ':leagueId/:teamId', component: ResultsComponent },
 
   { path: '**', redirectTo: 'page-not-found' },
 ];

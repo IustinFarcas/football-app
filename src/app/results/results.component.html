@@ -1,0 +1,38 @@
+<div
+  *ngIf="!(isLoading | async); else spinner"
+  class="container conatiner-fluid"
+>
+  <br />
+  <div class="row">
+    <div class="col col-1">
+      <button type="button" class="btn btn-success" (click)="onBackClicked()">
+        Back
+      </button>
+    </div>
+  </div>
+  <br />
+  <div class="row">
+    <div class="col">
+      <table class="table">
+        <tbody>
+          <tr *ngFor="let result of results">
+            <td>
+              <img [src]="result.homeTeam.logoUrl" width="30" height="30" />
+            </td>
+            <td>{{ result.homeTeam.name }}</td>
+            <td>{{ result.homeTeam.goals }}</td>
+            <td>-</td>
+            <td>{{ result.awayTeam.goals }}</td>
+            <td>{{ result.awayTeam.name }}</td>
+            <td>
+              <img [src]="result.awayTeam.logoUrl" width="30" height="30" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<ng-template #spinner>
+  <app-spinner></app-spinner>
+</ng-template>

@@ -22,3 +22,10 @@ export const allowedLeagueIds = [
   LeaguesEnum.france,
   LeaguesEnum.italy,
 ];
+
+export const standingsStoreKey = (leagueId: number): string => {
+  return leagueIdToLeagueName[leagueId] + ' - Standings';
+};
+export const resultsStoreKey = (leagueId: number): string => {
+  return leagueIdToLeagueName[leagueId] + ' - Results';
+};

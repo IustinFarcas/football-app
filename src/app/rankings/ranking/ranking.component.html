@@ -1,4 +1,4 @@
-<table class="table table-light table-hover">
+<table *ngIf="!(isLoading | async); else spinner" class="table table-light table-hover">
   <thead>
     <tr>
       <th scope="col">#</th>
@@ -13,7 +13,11 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let standing of standings" style="cursor: pointer" (click) = 'onTeamStandingClicked(standing)'>
+    <tr
+      *ngFor="let standing of standings"
+      style="cursor: pointer"
+      (click)="onTeamStandingClicked(standing)"
+    >
       <td>{{ standing.rank }}</td>
       <td>
         <img [src]="standing.logoUrl" width="25" height="25" />
@@ -28,3 +32,6 @@
     </tr>
   </tbody>
 </table>
+<ng-template #spinner>
+  <app-spinner></app-spinner>
+</ng-template>

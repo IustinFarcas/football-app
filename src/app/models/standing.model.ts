@@ -1,3 +1,4 @@
+
 export class StandingModel {
   constructor(
     public teamId: number,

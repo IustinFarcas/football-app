@@ -2,78 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import {
-  MatchHistoryModel,
-  TeamScoreModel,
-} from '../models/match-history.model';
+import { FixtureResponse } from '../interfaces/fixture-response.interface';
+import { StandigsResponse } from '../interfaces/standigs-response.interface';
+import { ResultModel } from '../models/result.model';
 import { StandingModel } from '../models/standing.model';
-
-export interface Fixture {
-  fixture: {
-    timestamp: number;
-    // FT - Match Finished
-    status: {
-      short: string;
-    };
-  };
-  teams: {
-    home: {
-      id: number;
-      name: string;
-      logo: string;
-    };
-    away: {
-      id: number;
-      name: string;
-      logo: string;
-    };
-  };
-  goals: {
-    home: number;
-    away: number;
-  };
-}
-
-export interface FixtureResponse {
-  errors: Object;
-  results: number;
-  response: Fixture[];
-}
-
-export interface TeamStanding {
-  rank: number;
-  team: {
-    id: number;
-    name: string;
-    logo: string;
-  };
-  points: number;
-  goalsDiff: number;
-  all: {
-    played: number;
-    win: number;
-    draw: number;
-    lose: number;
-  };
-}
-
-export interface League {
-  league: {
-    id: number;
-    season: number;
-    standings: TeamStanding[][];
-  };
-}
-
-export interface StandigsResponse {
-  errors: Object;
-  results: number;
-  response: League[];
-}
+import { TeamScoreModel } from '../models/team-score.model';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  apiKey: string = 'a5e82426e1b657f078bba9ea5aa31c54';
   baseUrl: string = 'https://v3.football.api-sports.io';
   season: number = new Date().getFullYear();
   matchFinishedStatus: string = 'FT';
@@ -83,13 +19,7 @@ export class ApiService {
   getStanding(leagueId: number): Observable<StandingModel[]> {
     return this.http
       .get<StandigsResponse>(
-        `${this.baseUrl}/standings?league=${leagueId}&season=${this.season}`,
-        {
-          headers: {
-            'x-rapidapi-host': 'v3.football.api-sports.io',
-            'x-rapidapi-key': `${this.apiKey}`,
-          },
-        }
+        `${this.baseUrl}/standings?league=${leagueId}&season=${this.season}`
       )
       .pipe(
         map((res) => {
@@ -124,16 +54,10 @@ export class ApiService {
       );
   }
 
-  getFinishedMatches(leagueId: number): Observable<MatchHistoryModel[]> {
+  getFinishedMatches(leagueId: number): Observable<ResultModel[]> {
     return this.http
       .get<FixtureResponse>(
-        `${this.baseUrl}/fixtures?league=${leagueId}&season=${this.season}&status=${this.matchFinishedStatus}`,
-        {
-          headers: {
-            'x-rapidapi-host': 'v3.football.api-sports.io',
-            'x-rapidapi-key': `${this.apiKey}`,
-          },
-        }
+        `${this.baseUrl}/fixtures?league=${leagueId}&season=${this.season}&status=${this.matchFinishedStatus}`
       )
       .pipe(
         map((res) => {
@@ -142,7 +66,7 @@ export class ApiService {
               message: Object.values(res.errors)[0],
             });
 
-          let data: MatchHistoryModel[] = [];
+          let data: ResultModel[] = [];
 
           res.response.map((r) => {
             const homeTeam = new TeamScoreModel(
@@ -157,7 +81,7 @@ export class ApiService {
               r.teams.away.logo,
               r.goals.away
             );
-            const result = new MatchHistoryModel(
+            const result = new ResultModel(
               r.fixture.status.short,
               new Date(r.fixture.timestamp),
               homeTeam,
